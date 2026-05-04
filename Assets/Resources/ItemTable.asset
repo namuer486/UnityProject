@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed8e6bf1bc43c564ebe89d504d1e879a, type: 3}
+  m_Name: ItemTable
+  m_EditorClassIdentifier: 
+  items:
+  - ItemID: 1001
+    type: 0
+    maxCount: 5
+    itemName: "\u5251"
+    icon: {fileID: 1302485860, guid: e01effb293976db469b48738b97c6188, type: 3}
