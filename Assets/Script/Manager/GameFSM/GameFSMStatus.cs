@@ -3,6 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+public class InitStatu : Status
+{
+    private float timer = 0f;
+    private GameManage gameManage;
+    public void OnEnter()
+    {
+        timer = 0;
+        GameManage.instance.Init();
+        Debug.Log("初始化");
+    }
+    public void OnUpdate()
+    {
+        timer += Time.deltaTime;
+        if (timer > 1)
+        {
+            GameManage.instance.ChangeStatus(GameStatus.menu);
+        }
+
+    }
+    public void OnExit()
+    {
+
+    }
+}
 public class MenuStatu : Status
 {
     public void OnEnter()
@@ -12,10 +36,7 @@ public class MenuStatu : Status
     }
     public void OnUpdate()
     {
-        //if (GameManage.instance.IsGameBegin())
-        //{
-        //    GameManage.instance.ChangeStatus(GameStatus.gameplay);
-        //}
+
     }
     public void OnExit()
     {
@@ -28,24 +49,22 @@ public class GamePlayStatu : Status
     public void OnEnter()
     {
         Debug.Log("游戏开始");
-        EventCenter.Instance.OnTriggerEven("InputOpen");
-        EventCenter.Instance.OnTriggerEven("MonsterBirth");
+        EventCenter.Instance.OnTriggerEven("MonsterMangerReset");//服务内部动态数据需要重新回到初始状态
         EventCenter.Instance.OnTriggerEven("PlayerBirth");
+        EventCenter.Instance.OnTriggerEven("MonsterBirth");
+        EventCenter.Instance.OnTriggerEven("InputOpen");
         subFSM.Init();
         subFSM.ChangeSubState(GameSubStatus.normal);
 
     }
     public void OnUpdate()
     {
-        //if (GameManage.instance.IsGameOver())
-        //{
-        //    GameManage.instance.ChangeStatus(GameStatus.gameover);
-        //}
+
         subFSM.currentstatus.OnUpdate();
     }
     public void OnExit()
     {
-        subFSM.ChangeSubState(GameSubStatus.normal);
+        subFSM.ChangeSubState(GameSubStatus.over);
         EventCenter.Instance.OnTriggerEven("InputClose");
         EventCenter.Instance.OnTriggerEven("PushClearAll");
         EventCenter.Instance.OnTriggerEven("MonsterAllDie");
@@ -60,17 +79,6 @@ public class GameOverStatu : Status
     }
     public void OnUpdate()
     {
-        //返回主菜单
-        //if (GameManage.instance.IsBackMenu())
-        //{
-        //    GameManage.instance.ChangeStatus(GameStatus.menu);
-        //}
-
-        //if (GameManage.instance.IsGameBegin())
-        //{
-        //    GameManage.instance.ChangeStatus(GameStatus.gameplay);
-        //}
-
 
     }
     public void OnExit()

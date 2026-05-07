@@ -119,9 +119,6 @@ GameObject:
   - component: {fileID: 6999465876992513959}
   - component: {fileID: 740630730273827603}
   - component: {fileID: 8469855160885767229}
-  - component: {fileID: 1502860702832993319}
-  - component: {fileID: 1387145203885435900}
-  - component: {fileID: 7219974921690603597}
   m_Layer: 6
   m_Name: Tank
   m_TagString: Player
@@ -206,48 +203,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f76c743a2d05bb428e1f6114aa3772c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HP: 0
+  MP: 0
+  Level: 0
+  Exp: 0
   BirthPos: {fileID: 0}
-  DiePos: {x: -88.4, y: -9, z: 42.81}
---- !u!114 &1502860702832993319
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2348359774963155005}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c41d6dc62e8c8348a77039683bb700a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  attack_cd: 0.1
---- !u!114 &1387145203885435900
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2348359774963155005}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee8d36bed69242a4bbf9a051b9cb9c8e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   speed: 10
---- !u!114 &7219974921690603597
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2348359774963155005}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1cfae2312379c5a40a0aacdb2b37f4ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  attack_cd: 0.1
+  AKT: 10
   angleDelta: 45
   rotateTime: 1
+  rotateSpeed: 90
+  DiePos: {x: -88.4, y: -9, z: 42.81}
 --- !u!1 &5257011213752272217
 GameObject:
   m_ObjectHideFlags: 0

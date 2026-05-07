@@ -20,7 +20,7 @@ public class HPIShop : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Monster") || other.GetComponentInParent<MonsterFSM>() != null)
+        if(other.CompareTag("Monster") || other.GetComponentInParent<MonsterTank>() != null)
         {
 
         }

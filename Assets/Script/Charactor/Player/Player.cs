@@ -1,130 +1,124 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Presets;
 using UnityEngine;
 
-[SerializeField]
-public class Tank:Character
+public class Player : MonoBehaviour
 {
+    public int HP;
+    public int MP;
+    public int Level;
     public int Exp;
+    public Transform BirthPos;
+    private PlayerFSM fsm;
+    public float speed = 10f;
+    public float attack_cd = .1f;
+    public int AKT = 10;
+    public float angleDelta = 45f;
+    public float rotateTime = 1f;
+    public float rotateSpeed = 90f;
 
-    public void Reset()
+    public Vector3 DiePos=new Vector3(110,1110,10);
+
+    public void Init()
+    {
+        fsm =new PlayerFSM(this);
+        transform.position = BirthPos.position;
+        EventCenter.Instance.Add<int>(this, "PlayerHurt", OnHurt);
+        EventCenter.Instance.Add<int>(this, "PlayerExpUp", ExpUp);
+
+        EventCenter.Instance.OnTriggerEven("HPUpDate", HP);
+        EventCenter.Instance.OnTriggerEven("MPUpDate", MP);
+        EventCenter.Instance.OnTriggerEven("LevelUpDate", Level);
+    }
+    private void OnReset()
     {
         HP = 100;
         MP = 50;
         Level = 0;
         Exp = 0;
     }
-}
-public enum PlayerType
-{
-    idel,
-    move,
-    rotation,
-    die
-}
-public class Player : MonoBehaviour
-{
-    public Tank tank;
-    public Transform BirthPos;
-
-    public Vector3 DiePos=new Vector3(110,1110,10);
-    private Dictionary<PlayerType, Status> status=new Dictionary<PlayerType, Status>();
-    private Status curruntstatu;
-
-    private bool IsMoving=false;
-    private bool IsRotation=false;
-    private bool IsDie=false;
-
-    private void Start()
-    {
-        tank=new Tank();
-        
-        status.Add(PlayerType.idel, new PlayerIdelStatus(this));
-        status.Add(PlayerType.move, new PlayerMoveStatus(this));
-        status.Add(PlayerType.rotation, new PlayerRotationStatus(this));
-        status.Add(PlayerType.die, new PlayerDieStatus(this));
-        Init();
-
-        EventCenter.Instance.Add<int>(this, "PlayerHurt", OnHurt);
-        EventCenter.Instance.Add<int>(this, "PlayerExpUp", ExpUp);
-
-    }
-    public void Init()
-    {
-        tank.Reset();
-        IsDie = false;
-        ChangePlayerStatus(PlayerType.idel);
-        transform.position = BirthPos.position;
-
-        EventCenter.Instance.OnTriggerEven("HPUpDate", tank.HP);
-        EventCenter.Instance.OnTriggerEven("MPUpDate", tank.MP);
-        EventCenter.Instance.OnTriggerEven("LevelUpDate", tank.Level);
-    }
     private void Update()
     {
-        if(tank.HP<=0)
-        {
-            IsDie = true;//playerdie
-        }
-        if (Input.GetMouseButtonUp(0)&&!IsDie)
-        {
-            EventCenter.Instance.OnTriggerEven("PlayerAttack");
-        }
-        IsMoving = Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0;
-        IsRotation = Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.E);
-        curruntstatu.OnUpdate();
-        
+        if (fsm == null)
+            return;
+        fsm.curruntstatu.OnUpdate();
+
     }
     private void OnDestroy()
     {
         EventCenter.Instance.RemoveAll(this);
     }
-    public void ChangePlayerStatus(PlayerType playerType)
-    {
-        Debug.Log(playerType);
-        if (curruntstatu!=null)
-        {
-            curruntstatu.OnExit();
-        }
-        curruntstatu = status[playerType];
-        curruntstatu.OnEnter();
-    }
-    public bool CanMove() => IsMoving;
-    public bool CanRotation() => IsRotation;
-    public bool CanDie() => IsDie;
 
     private void OnHurt(int AkT)
     {
-        tank.HP-=AkT;
-        if (tank.HP < 0) { tank.HP = 0; }
-        EventCenter.Instance.OnTriggerEven("HPUpDate", tank.HP);
+        HP -=AkT;
+        if (HP < 0) 
+        { 
+            HP = 0;
+            fsm.IsDie = true;
+        }
+        EventCenter.Instance.OnTriggerEven("HPUpDate", HP);
     }
     private void MPHurt(int value)
     {
-        tank.MP-=value;
-        if (tank.MP < 0) {tank.MP = 0; }
-        EventCenter.Instance.OnTriggerEven("MPUpDate", tank.MP);
+        MP -=value;
+        if (MP < 0) {MP = 0; }
+        EventCenter.Instance.OnTriggerEven("MPUpDate", MP);
     }
     private void LevelUp()
     {
-        tank.Level++;
-        EventCenter.Instance.OnTriggerEven("LevelUpDate", tank.Level);
+        Level++;
+        EventCenter.Instance.OnTriggerEven("LevelUpDate", Level);
     }
     private void ExpUp(int exp)
     {
-        tank.Exp += exp;
-        if(tank.Exp > 100)
+        Exp += exp;
+        if(Exp > 100)
         {
-            tank.Exp -= 100;
+            Exp -= 100;
             LevelUp();
         }
-        Debug.Log("EXP:" + tank.Exp);
-        EventCenter.Instance.OnTriggerEven("ExpUpDate", tank.Exp);
+        Debug.Log("EXP:" + Exp);
+        EventCenter.Instance.OnTriggerEven("ExpUpDate", Exp);
     }
     public void Die()
     {
+        OnReset();
         transform.position = DiePos;
         
+    }
+    public void Move()
+    {
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+        Vector3 inputDir = new Vector3(h, 0, v);
+        inputDir.Normalize();
+        Rigidbody rb = GetComponent<Rigidbody>();//TODO:迁移到输入服务里
+        rb.velocity = transform.rotation * inputDir * speed;
+    }
+    public void RightRotation()
+    {
+        transform.Rotate(0, rotateSpeed * Time.deltaTime, 0);
+
+    }
+    public void LeftRotation()
+    {
+        transform.Rotate(0, -rotateSpeed * Time.deltaTime, 0);
+
+    }
+    public void Attack()
+    {
+        GameObject mybullet = BulletPool.instance.GetBullet();
+        if (mybullet == null)
+        {
+            Debug.Log("子弹未设置");
+            return;
+        }
+        mybullet.transform.position = transform.Find("fort").Find("posshoot").position;
+        mybullet.transform.rotation = transform.rotation;
+        mybullet.SetActive(true);
+        fsm.IsAttack = false;
     }
 }

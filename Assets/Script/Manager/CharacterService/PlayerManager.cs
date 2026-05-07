@@ -35,9 +35,9 @@ public class PlayerManager : MonoBehaviour
     private void PlayerBirth()
     {
         player.Init();
-        attack.Init();
-        move.Init();
-        rotation.Init();
+        //attack.Init();
+        //move.Init();
+        //rotation.Init();
         EventCenter.Instance.OnTriggerEven("LoadPlayerPos", player.transform);
     }
 }

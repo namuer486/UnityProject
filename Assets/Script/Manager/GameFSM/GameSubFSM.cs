@@ -15,6 +15,7 @@ public class GameSubFSM
         keyValuePairs.Add(GameSubStatus.normal, new NormalSubStatus(this));
         keyValuePairs.Add(GameSubStatus.pause, new PauseSubStatus(this));
         keyValuePairs.Add(GameSubStatus.chose, new ChoseSubStatus(this));
+        keyValuePairs.Add(GameSubStatus.over, new OverSubStatus(this));
     }
 
     public void ChangeSubState(GameSubStatus status)

@@ -20,6 +20,6 @@ public class Card : MonoBehaviour,IPointerClickHandler
         }
         item = ItemMake.instance.GetItem(Config);
         item.Use(Config.carddate);
-        EventCenter.Instance.OnTriggerEven("CloseSkiiPanle");
+        EventCenter.Instance.OnTriggerEven("GameChoseOver");
     }
 }

@@ -155,7 +155,7 @@ public class AttackStatu : Status
     {
         this.mananger = manager;
         this.prameter = mananger.prameter;
-        fort = mananger.transform.Find("fort");
+        fort = prameter.transform.Find("fort");
     }
     public void OnEnter()
     {
@@ -200,17 +200,15 @@ public class DieStatu : Status
     }
     public void OnEnter()
     {
-        EventCenter.Instance.OnTriggerEven("MonsterDie", mananger.gameObject);
+        EventCenter.Instance.OnTriggerEven("MonsterDie", prameter.gameObject);
 
     }
     public void OnUpdate()
     {
 
-        
     }
     public void OnExit()
     {
 
     }
-
 }

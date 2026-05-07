@@ -24,23 +24,25 @@ public class MonsterManager : MonoBehaviour
     public int monsternum = 1;
     public int Level = 1;
     public float time = 10;
+    private bool StartTime = false;
     private float timer = 0;
+    private int monsterlive;
 
-    void Start()
+    private Transform playerpos;
+    public void Update()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
+        if (!StartTime)
+            return;
         timer += Time.deltaTime;
-        if (timer > time)
+        if (monsterlive == 0||timer>time)
         {
-            //Level++;
-            //MonsterAllDie();
-            //MonsterBirth();
             timer = 0;
+            EventCenter.Instance.OnTriggerEven("GameChose");
+            Level++;
+            monsternum = Level * monsternum;
+            monsterlive = monsternum;
+            MonsterAllDie();
+            MonsterBirth();
         }
     }
     private void Init()
@@ -50,35 +52,48 @@ public class MonsterManager : MonoBehaviour
         EventCenter.Instance.Add<MonsterFSM, int>(this, "MonsterOnHurt", MonsterOnHurt);
         EventCenter.Instance.Add(this, "MonsterAllDie", MonsterAllDie);
         EventCenter.Instance.Add(this, "MonsterBirth", MonsterBirth);
+        EventCenter.Instance.Add<Transform>(this, "LoadPlayerPos", LoadPlayerPos);
+        EventCenter.Instance.Add<bool>(this, "StartMonsterTime", StartMonsterTime);
+        EventCenter.Instance.Add(this, "MonsterMangerDestry", Destry);
+        EventCenter.Instance.Add(this, "MonsterMangerReset", OnReset);
+    }
+    private void Destry()
+    {
+        EventCenter.Instance.RemoveAll(this);
+    }
+    private void OnReset()
+    {
+        Level = 1;
+        timer = 0;
+        monsternum = 1;
+        StartTime = false;
+    }
+    private void StartMonsterTime(bool flag)
+    {
+        StartTime = flag;
     }
     private void MonsterBirth()//TODO:波次生产器
     {
-        monsternum = Level * monsternum;
+        if (Birthpos.Length <= 0)
+        {
+            Debug.Log("坐标未添加");
+            return;
+        }
+        monsterlive = monsternum;
+        StartCoroutine(LoadMonster());
+    }
+    IEnumerator LoadMonster()
+    {
         for (int i = 0; i < monsternum; i++)
         {
-            if (Birthpos.Length <= 0)
-            {
-                Debug.Log("坐标未添加");
-                return;
-            }
             GameObject mymonster = MonsterPool.instance.GetMonster();
-
-            //初始朝向设置
-            //mymonster.transform.position = bossparolpos[bossparolpos_idx].transform.position;
-            //mymonster.transform.LookAt(bossparolpos[bossparolpos_idx + 1].transform.position);
-            //mymonster.transform.Find("fort").LookAt(bossparolpos[bossparolpos_idx + 1].transform.position);
+            mymonster.GetComponent<MonsterTank>().Init(playerpos);
             mymonster.transform.position = Birthpos[0].position + Vector3.left * 150;
-
             mymonster.SetActive(true);
-
-            mymonster.GetComponent<MonsterFSM>().Init();
-            //mymonster.GetComponent<MonsterCharol>().Init();
-            //mymonster.GetComponent<MonsterRepel>().Init();
             EventCenter.Instance.OnTriggerEven("UpLoadMonsterPos", transform.position);
             monster.Add(mymonster);
+            yield return new WaitForSeconds(2);
         }
-        //EventCenter.Instance.OnTriggerEven("MonsterDie");
-
     }
     private void MonsterOnHurt(MonsterFSM monster, int AkT)
     {
@@ -94,6 +109,7 @@ public class MonsterManager : MonoBehaviour
     {
         monster.Remove(gameObject);
         MonsterPool.instance.ComeBack(gameObject);
+        monsterlive--;
     }
     private void MonsterAllDie()
     {
@@ -104,5 +120,13 @@ public class MonsterManager : MonoBehaviour
             MonsterPool.instance.ComeBack(mon);
         }
         monster.Clear();
+        monsterlive = 0;
+    }
+    public void LoadPlayerPos(Transform playerpos)
+    {
+        if (playerpos == null)
+            return;
+        this.playerpos = playerpos;
+
     }
 }

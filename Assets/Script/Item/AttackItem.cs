@@ -6,7 +6,7 @@ public class AttackItem : BaseItem
 {
     public void Use(int value)
     {
-        PlayerManager.instance.attack.AKT += value;
+        PlayerManager.instance.player.AKT += value;
         Debug.Log("攻击提升");
         //触发对应事件
     }

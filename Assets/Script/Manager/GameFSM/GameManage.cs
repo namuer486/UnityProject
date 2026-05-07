@@ -9,6 +9,7 @@ using UnityEngine.UI;
 
 public enum GameStatus
 {
+    init,
     menu,
     gameplay,
     gameover
@@ -17,7 +18,8 @@ public enum GameSubStatus
 {
     normal,
     pause,
-    chose
+    chose,
+    over
 }
 public class GameManage : MonoBehaviour
 {
@@ -39,20 +41,17 @@ public class GameManage : MonoBehaviour
 
     void Start()
     {
-        Init();
-        EventCenter.Instance.OnTriggerEven("BackPackManagerInit");
-        EventCenter.Instance.OnTriggerEven("UiManagerInit");
-        EventCenter.Instance.OnTriggerEven("MonsterManagerInit");
-        EventCenter.Instance.OnTriggerEven("PlayerManagerInit");
-        Debug.Log("服务模块初始化完成");
+        is_game_over = true;
+        is_back_menu = false;
+        gamestatus = new Dictionary<GameStatus, Status>();
 
-        var table = ItemTable.Instance;
-        table.SaveConfig();
-        Debug.Log("物品表已加载：" + table);
-        var ctable = CardsConfig.Instance;
-        ctable.SaveCards();
-        Debug.Log("卡片表已加载：" + ctable);
-        BulletPool.instance.Init();
+        gamestatus.Add(GameStatus.init, new InitStatu());
+        gamestatus.Add(GameStatus.menu, new MenuStatu());
+        gamestatus.Add(GameStatus.gameplay, new GamePlayStatu());
+        gamestatus.Add(GameStatus.gameover, new GameOverStatu());
+        ChangeStatus(GameStatus.init);
+        //Init();
+
     }
     void Update()
     {
@@ -71,20 +70,25 @@ public class GameManage : MonoBehaviour
         
     }
 
-    private void Init()
+    public void Init()
     {
-        is_game_over = true;
-        is_back_menu = false;
-        gamestatus = new Dictionary<GameStatus, Status>();
-
-        gamestatus.Add(GameStatus.menu, new MenuStatu());
-        gamestatus.Add(GameStatus.gameplay, new GamePlayStatu());
-        gamestatus.Add(GameStatus.gameover, new GameOverStatu());
-        ChangeStatus(GameStatus.menu);
-
         EventCenter.Instance.Add(this, "GameOver", GameOver);
         EventCenter.Instance.Add(this, "GameBegin", GameBegin);
         EventCenter.Instance.Add(this, "ComeBackMenu", ComeBackMenu);
+
+        EventCenter.Instance.OnTriggerEven("BackPackManagerInit");
+        EventCenter.Instance.OnTriggerEven("UiManagerInit");
+        EventCenter.Instance.OnTriggerEven("MonsterManagerInit");
+        EventCenter.Instance.OnTriggerEven("PlayerManagerInit");
+        Debug.Log("服务模块初始化完成");
+
+        var table = ItemTable.Instance;
+        table.SaveConfig();
+        Debug.Log("物品表已加载：" + table);
+        var ctable = CardsConfig.Instance;
+        ctable.SaveCards();
+        Debug.Log("卡片表已加载：" + ctable);
+        BulletPool.instance.Init();
     }
     public void ChangeStatus(GameStatus status)
     {

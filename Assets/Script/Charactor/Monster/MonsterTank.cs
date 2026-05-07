@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
 
 [System.Serializable]
@@ -17,11 +18,12 @@ public class MonsterTank:MonoBehaviour
     //×·»÷
     private Transform playerpos;
     public float charolspeed;
-
-    public void Init()
+    //×´Ì¬»ú
+    private MonsterFSM fsm;
+    public void Init(Transform playerpos)
     {
-        EventCenter.Instance.Add<Transform>(this, "LoadPlayerPos", LoadPlayerPos);
-
+        fsm=new MonsterFSM(this);
+        this.playerpos = playerpos;
         HP = 100;
         MP = 50;
         exp = 10;
@@ -29,12 +31,19 @@ public class MonsterTank:MonoBehaviour
         attack_cd = 0.5f;
         item = ItemTable.instance.GetConfig(1001);
     }
+    private void Update()
+    {
+        fsm.currentstatus.OnUpdate();
+    }
     public bool CheckAttack()
     {
-        float distance = Vector3.Distance(playerpos.position, transform.position);
-        if (distance< attack_length)
+        if (playerpos!=null)
         {
-            return true;
+            float distance = Vector3.Distance(playerpos.position, transform.position);
+            if (distance < attack_length)
+            {
+                return true;
+            }
         }
         return false;
     }
@@ -50,14 +59,6 @@ public class MonsterTank:MonoBehaviour
             mybullet.SetActive(true);
         }
     }
-
-    public void LoadPlayerPos(Transform playerpos)
-    {
-        if (playerpos == null)
-            return;
-        this.playerpos = playerpos;
-
-    }
     public void Charol()
     {
         if (playerpos == null)
@@ -69,6 +70,16 @@ public class MonsterTank:MonoBehaviour
 
         // Ó¦ÓÃÆ«ÒÆ
         transform.position = Vector3.MoveTowards(transform.position, playerpos.position, charolspeed * Time.deltaTime) + repelOffset * Time.deltaTime; ;
+
+    }
+    public void OnHurt(int AkT)
+    {
+        HP -= AkT;
+        if (HP < 0)
+        {
+            HP = 0;
+            fsm.IsDie = true;
+        }
 
     }
 }

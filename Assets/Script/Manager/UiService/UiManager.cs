@@ -16,7 +16,7 @@ public class UiManager:MonoBehaviour
         else
             Destroy(this);
     }
-
+    public InitUi InitUi;
     public MenuUi MenuUi;
     public GameUiShow GameUi;
     public PaueseUi PaueseUi;
@@ -27,7 +27,8 @@ public class UiManager:MonoBehaviour
 
     public BasePanel PauseUi;
     private BasePanel UiMainNow;
-    private Stack<BasePanel> PopupStack;
+    private Stack<BasePanel> PopupStack;//手动管理弹窗
+    private Stack<BasePanel> AiPopupStack;//自动管理弹窗
     private GameStatus statusnow;
 
     private bool IsPanelOpen;
@@ -47,6 +48,7 @@ public class UiManager:MonoBehaviour
         IsPanelOpen = false;
         IsBackOpen = false;
         PopupStack = new Stack<BasePanel>();
+        AiPopupStack = new Stack<BasePanel>();
         EventCenter.Instance.Add(this, "RefreshScreen", RefreshScreen);
         BackPack.Init();
         PlayerPanel.Init();
@@ -56,6 +58,7 @@ public class UiManager:MonoBehaviour
         EventCenter.Instance.Add(this, "PushPuasePanel", PushPuasePanel);
         EventCenter.Instance.Add(this, "PushClearAll", ClearAll);
         EventCenter.Instance.Add(this, "PushCardsPanel", PushCardsPanel);
+        EventCenter.Instance.Add(this, "PopCardsPanel", PopCardsPanel);
 
     }
     //主界面处理
@@ -65,6 +68,7 @@ public class UiManager:MonoBehaviour
         statusnow = GameManage.instance.GetStatus();
         switch (statusnow)
         {
+            case GameStatus.init: ChangeMainUi(InitUi); break;
             case GameStatus.menu: ChangeMainUi(MenuUi); break;
             case GameStatus.gameplay: ChangeMainUi(GameUi); break;
             case GameStatus.gameover: ChangeMainUi(EndUi); break;
@@ -124,13 +128,24 @@ public class UiManager:MonoBehaviour
     }
     private void PushCardsPanel()
     {
-        Push(SkiilPanel);
+        PushAi(SkiilPanel);
+    }
+    private void PopCardsPanel()
+    {
+        PopAi();
     }
     private void Push(BasePanel panel)
     {
         if (panel == null)
             return;
         PopupStack.Push(panel);
+        panel.Open();
+    }
+    private void PushAi(BasePanel panel)
+    {
+        if (panel == null)
+            return;
+        AiPopupStack.Push(panel);
         panel.Open();
     }
     private void Pop()
@@ -141,12 +156,25 @@ public class UiManager:MonoBehaviour
             panel.Close();
         }
     }
+    private void PopAi()
+    {
+        if(AiPopupStack.Count > 0)
+        {
+            var panel = AiPopupStack.Pop();
+            panel.Close();
+        }
+    }
     private void ClearAll()
     {
         while (PopupStack.Count > 0)
         {
             var panel = PopupStack.Pop();
             panel.Close();
+        }
+        while (AiPopupStack.Count > 0)
+        {
+            var panelai = AiPopupStack.Pop();
+            panelai.Close();
         }
     }
     private void BackClose()

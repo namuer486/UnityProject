@@ -17,11 +17,11 @@ public class Bullet : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
 
-        if (other.CompareTag("Monster") || other.GetComponentInParent<MonsterFSM>() != null)
+        if (other.CompareTag("Monster") || other.GetComponentInParent<MonsterTank>() != null)
         {
-            MonsterFSM monster = other.GetComponentInParent<MonsterFSM>();
-            EventCenter.Instance.OnTriggerEven("MonsterOnHurt", monster, AKT);
-            EventCenter.Instance.OnTriggerEven("PlayerExpUp", monster.prameter.exp);
+            MonsterTank monster = other.GetComponentInParent<MonsterTank>();
+            monster.OnHurt(AKT);
+            EventCenter.Instance.OnTriggerEven("PlayerExpUp", monster.exp);
             Debug.Log(other + "±»»÷ÖÐ");
         }
         BulletPool.instance.ComeBackBullet(gameObject);

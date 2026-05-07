@@ -6,7 +6,7 @@ public class SpeedItem : BaseItem
 {
     public void Use(int value)
     {
-        PlayerManager.instance.move.speed += value;
+        PlayerManager.instance.player.speed += value;
         Debug.Log("速度提升");
         //触发对应事件
     }

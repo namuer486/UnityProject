@@ -5,11 +5,12 @@ using UnityEngine;
 public class PlayerIdelStatus:Status
 {
     // Start is called before the first frame update
-    private Player manager;
-    private bool isMoving;
-    public PlayerIdelStatus(Player manager)
+    private PlayerFSM manager;
+    private Player tank;
+    public PlayerIdelStatus(PlayerFSM manager)
     {
         this.manager = manager;
+        tank = manager.tank;
     }
     public void OnEnter()
     {
@@ -17,17 +18,19 @@ public class PlayerIdelStatus:Status
     }
     public void OnUpdate()
     {
-        if (manager.CanDie())
+        if (manager.IsDie)
         {
             manager.ChangePlayerStatus(PlayerType.die);
         }
-        isMoving = Input.GetAxisRaw("Horizontal") != 0
-             || Input.GetAxisRaw("Vertical") != 0;
-        if(isMoving)
+        if(manager.IsMoving)
         {
             manager.ChangePlayerStatus(PlayerType.move);
         }
-        if(manager.CanRotation())
+        if (manager.IsAttack)
+        {
+            manager.ChangePlayerStatus(PlayerType.attack);
+        }
+        if (manager.IsRotation != 0)
         {
             manager.ChangePlayerStatus(PlayerType.rotation);
         }
@@ -41,10 +44,12 @@ public class PlayerIdelStatus:Status
 public class PlayerMoveStatus:Status
 {
     // Start is called before the first frame update
-    private Player manager;
-    public PlayerMoveStatus(Player manager)
+    private PlayerFSM manager;
+    private Player tank;
+    public PlayerMoveStatus(PlayerFSM manager)
     {
         this.manager = manager;
+        tank = manager.tank;
     }
     public void OnEnter()
     {
@@ -52,18 +57,23 @@ public class PlayerMoveStatus:Status
     }
     public void OnUpdate()
     {
-        if (manager.CanDie())
+        if (manager.IsDie)
         {
             manager.ChangePlayerStatus(PlayerType.die);
         }
-        if (manager.CanRotation())
+        if (manager.IsRotation!=0)
         {
             manager.ChangePlayerStatus(PlayerType.rotation);
         }
-        if (manager.CanMove())
+        if (manager.IsAttack)
         {
-            EventCenter.Instance.OnTriggerEven("PlayerMove");
+            manager.ChangePlayerStatus(PlayerType.attack);
         }
+        if (!manager.IsMoving)
+        {
+            manager.ChangePlayerStatus(PlayerType.idel);
+        }
+        tank.Move();
     }
     public void OnExit()
     {
@@ -74,12 +84,14 @@ public class PlayerMoveStatus:Status
 public class PlayerRotationStatus: Status
 {
     // Start is called before the first frame update
-    private Player manager;
+    private PlayerFSM manager;
+    private Player tank;
     private bool isLeft;
     private float timer;
-    public PlayerRotationStatus(Player manager)
+    public PlayerRotationStatus(PlayerFSM manager)
     {
         this.manager = manager;
+        tank = manager.tank;
     }
     public void OnEnter()
     {
@@ -91,18 +103,22 @@ public class PlayerRotationStatus: Status
     public void OnUpdate()
     {
         timer += Time.deltaTime;
-        if(manager.CanDie())
+        if(manager.IsDie)
         {
             manager.ChangePlayerStatus(PlayerType.die);
         }
-        if (timer > 1.1)
+        if (manager.IsRotation==0)
         {
             manager.ChangePlayerStatus(PlayerType.idel);
         }
-        if(isLeft)
-            EventCenter.Instance.OnTriggerEven("PlayerLeftRotation");
-        else
-            EventCenter.Instance.OnTriggerEven("PlayerRightRotation");
+        if (manager.IsRotation < 0)
+        {
+            manager.tank.LeftRotation();
+        }
+        else if(manager.IsRotation > 0)
+        {
+            manager.tank.RightRotation();
+        }
 
     }
     public void OnExit()
@@ -110,18 +126,61 @@ public class PlayerRotationStatus: Status
         timer = 0;
     }
 }
-public class PlayerDieStatus : Status
+public class PlayerAttackStatus : Status
 {
     // Start is called before the first frame update
-    private Player manager;
-
-    public PlayerDieStatus(Player manager)
+    private PlayerFSM manager;
+    private Player tank;
+    private float timer;
+    public PlayerAttackStatus(PlayerFSM manager)
     {
         this.manager = manager;
+        tank = manager.tank;
     }
     public void OnEnter()
     {
-        manager.Die();
+        timer = 0;
+    }
+    public void OnUpdate()
+    {
+        timer += Time.deltaTime;
+        if(manager.IsDie)
+        {
+            manager.ChangePlayerStatus(PlayerType.die);
+        }
+        if (manager.IsRotation != 0)
+        {
+            manager.ChangePlayerStatus(PlayerType.rotation);
+        }
+        if (manager.IsMoving)
+        {
+            manager.ChangePlayerStatus(PlayerType.move);
+        }
+        if(timer > tank.attack_cd&&manager.IsAttack)
+        {
+            tank.Attack();
+        }
+
+    }
+    public void OnExit()
+    {
+
+    }
+}
+public class PlayerDieStatus : Status
+{
+    // Start is called before the first frame update
+    private PlayerFSM manager;
+    private Player tank;
+
+    public PlayerDieStatus(PlayerFSM manager)
+    {
+        this.manager = manager;
+        tank = manager.tank;
+    }
+    public void OnEnter()
+    {
+        tank.Die();
         EventCenter.Instance.OnTriggerEven("PlayerDie");
         EventCenter.Instance.OnTriggerEven("GameOver");
 

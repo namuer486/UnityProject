@@ -32,7 +32,7 @@ public class BulletPool: MonoBehaviour
         for (int i = 0; i < MAXNUMBULLET; i++)
         {
             GameObject newbullet = Instantiate(bullet, pos_pool, Quaternion.identity);
-            newbullet.transform.GetComponent<Bullet>().AKT = PlayerManager.instance.attack.AKT;
+            newbullet.transform.GetComponent<Bullet>().AKT = PlayerManager.instance.player.AKT;
             newbullet.SetActive(false);
             queue.Enqueue(newbullet);
         }

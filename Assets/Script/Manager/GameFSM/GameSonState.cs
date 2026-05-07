@@ -14,18 +14,25 @@ public class NormalSubStatus:Status
     public void OnEnter()
     {
         EventCenter.Instance.Add(this, "GamePause", GamePause);
+        EventCenter.Instance.Add(this, "GameChose", GameChose);
+        EventCenter.Instance.OnTriggerEven("StartMonsterTime",true);
     }
     public void OnUpdate()
     {
-
+        
     }
     public void OnExit()
     {
         EventCenter.Instance.RemoveAll(this);
+        EventCenter.Instance.OnTriggerEven("StartMonsterTime", false);
     }
     private void GamePause()
     {
         mananger.ChangeSubState(GameSubStatus.pause);
+    }
+    private void GameChose()
+    {
+        mananger.ChangeSubState(GameSubStatus.chose);
     }
 }
 public class PauseSubStatus:Status
@@ -66,8 +73,38 @@ public class ChoseSubStatus : Status
     // Start is called before the first frame update
     public void OnEnter()
     {
-        EventCenter.Instance.OnTriggerEven("ChoseSkillUi");
-        EventCenter.Instance.OnTriggerEven("ChoseSkill");//TODO:技能树
+        EventCenter.Instance.Add(this, "GameChoseOver", GameChoseOver);
+        EventCenter.Instance.OnTriggerEven("PushCardsPanel");
+        Time.timeScale = 0;
+
+        //EventCenter.Instance.OnTriggerEven("ChoseSkill");//TODO:技能树
+    }
+    public void OnUpdate()
+    {
+
+    }
+    public void OnExit()
+    {
+        EventCenter.Instance.OnTriggerEven("PopCardsPanel");
+        EventCenter.Instance.RemoveAll(this);
+        Time.timeScale = 1;
+    }
+    private void GameChoseOver()
+    {
+        mananger.ChangeSubState(GameSubStatus.normal);
+    }
+}
+public class OverSubStatus : Status
+{
+    private GameSubFSM mananger;
+    public OverSubStatus(GameSubFSM manager)
+    {
+        this.mananger = manager;
+    }
+    // Start is called before the first frame update
+    public void OnEnter()
+    {
+        EventCenter.Instance.OnTriggerEven("PushClearAll");
     }
     public void OnUpdate()
     {
@@ -77,4 +114,5 @@ public class ChoseSubStatus : Status
     {
 
     }
+
 }
