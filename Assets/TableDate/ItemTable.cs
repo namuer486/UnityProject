@@ -5,7 +5,8 @@ using UnityEngine;
 public enum ItemType
 {
     hp,
-    attack
+    attack,
+    equipment
 }
 
 [CreateAssetMenu(menuName = "Item/ItemTable", fileName = "ItemTable")]//静态数据部分
@@ -53,6 +54,7 @@ public class ItemConfig
 {
     public int ItemID;
     public ItemType type;
+    public EquipmetType equipmet;
     public int maxCount;
     public string itemName;
     public Sprite icon;

@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   items:
   - ItemID: 1001
-    type: 0
+    type: 2
+    equipmet: 4
     maxCount: 5
     itemName: "\u5251"
     icon: {fileID: 1302485860, guid: e01effb293976db469b48738b97c6188, type: 3}
+    effectNum: 0

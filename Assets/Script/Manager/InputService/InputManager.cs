@@ -58,8 +58,8 @@ public class InputManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.C))
         {
-            Debug.Log("打开技能选择");
-            EventCenter.Instance.OnTriggerEven("PushCardsPanel");
+            Debug.Log("打开装备栏");
+            EventCenter.Instance.OnTriggerEven("PushEquipmentPanel");
             
         }
         CheckMove();

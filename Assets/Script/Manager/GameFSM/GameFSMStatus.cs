@@ -53,6 +53,7 @@ public class GamePlayStatu : Status
         EventCenter.Instance.OnTriggerEven("PlayerBirth");
         EventCenter.Instance.OnTriggerEven("MonsterBirth");
         EventCenter.Instance.OnTriggerEven("InputOpen");
+        EventCenter.Instance.OnTriggerEven("BagClear");
         subFSM.Init();
         subFSM.ChangeSubState(GameSubStatus.normal);
 

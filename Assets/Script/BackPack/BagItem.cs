@@ -15,5 +15,10 @@ public class BagItem//动态数据部分
     public ItemConfig itemcfg { get; set; }
     public int count { get; set; }
 
+    public void Clear()
+    {
+        itemcfg = null;
+        count = 0;
+    }
 }
 

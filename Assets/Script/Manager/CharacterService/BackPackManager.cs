@@ -18,19 +18,6 @@ public class BackPackManager : MonoBehaviour
     public BagDate bagDate { get; private set; }
     private int Bagitemnum = 0;
     private int tempidx = -1;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     private void Init()
     {
         bagDate = new BagDate();
@@ -38,6 +25,7 @@ public class BackPackManager : MonoBehaviour
         EventCenter.Instance.Add<int>(this, "UseItem", UseItem);
         EventCenter.Instance.Add<int>(this, "ItemChangeSetNowIdx", SetNowIdx);
         EventCenter.Instance.Add<int>(this, "ItemChangeChangeIdx", ChangeIdx);
+        EventCenter.Instance.Add(this, "BagClear", Clear);
     }
     public void Add(ItemConfig itemcfg,int count=1)
     {
@@ -61,7 +49,7 @@ public class BackPackManager : MonoBehaviour
             return;
         }
         BagItem newbagItem = new BagItem(itemcfg, count);
-        bagDate.Add(newbagItem, Bagitemnum);
+        bagDate.Add(newbagItem);
         Bagitemnum++;
         EventCenter.Instance.OnTriggerEven("BackPackUiUpdate");
 
@@ -81,7 +69,6 @@ public class BackPackManager : MonoBehaviour
         if (bagDate.items[itemidx].count <= 0)
         {
             Debug.Log("背包销毁物品" + bagDate.items[itemidx].itemcfg.itemName);
-            //ItemMake.instance.GetItem(bagDate.Pop(itemidx).itemcfg)?.Use();
             ItemMake.instance.GetItem(bagDate.items[itemidx].itemcfg)?.Use(bagDate.items[itemidx].itemcfg.effectNum);
             bagDate.Remove(itemidx);
             Bagitemnum--;
@@ -96,6 +83,7 @@ public class BackPackManager : MonoBehaviour
     {
         if (nowidx < 0 || nowidx >= bagDate.count)
             return;
+        Debug.Log("开始移动");
         tempidx = nowidx;
     }
     public void ChangeIdx(int changeidx)
@@ -104,5 +92,13 @@ public class BackPackManager : MonoBehaviour
             return;
         (bagDate.items[tempidx], bagDate.items[changeidx]) = (bagDate.items[changeidx], bagDate.items[tempidx]);
         tempidx = -1;
+        EventCenter.Instance.OnTriggerEven("BackPackUiUpdate");
+        Debug.Log("移动结束");
+    }
+    private void Clear()
+    {
+        bagDate.Clear();
+        Bagitemnum = 0;
+        EventCenter.Instance.OnTriggerEven("BackPackUiUpdate");
     }
 }

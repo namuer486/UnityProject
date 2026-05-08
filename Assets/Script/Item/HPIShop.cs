@@ -28,7 +28,7 @@ public class HPIShop : MonoBehaviour
         if (itemConfig != null && timer > 1)
         {
             Debug.Log("物品开始添加");
-            EventCenter.Instance.OnTriggerEven("BagAdd", itemConfig, 1);
+            EventCenter.Instance.OnTriggerEven("BagAdd", itemConfig, 8);
             timer = 0;
         }
 

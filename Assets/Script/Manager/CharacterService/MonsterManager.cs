@@ -21,7 +21,7 @@ public class MonsterManager : MonoBehaviour
     private List<GameObject> monster;
 
     public Transform[] Birthpos;
-    public int monsternum = 1;
+    public int monsternum;
     public int Level = 1;
     public float time = 10;
     private bool StartTime = false;

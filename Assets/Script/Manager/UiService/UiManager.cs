@@ -24,6 +24,7 @@ public class UiManager:MonoBehaviour
     public SkiilPanel SkiilPanel;
     public PlayerPanel PlayerPanel;
     public BackPack BackPack;
+    public EquipmentUi EquipmentUi;
 
     public BasePanel PauseUi;
     private BasePanel UiMainNow;
@@ -34,6 +35,7 @@ public class UiManager:MonoBehaviour
     private bool IsPanelOpen;
     private bool IsBackOpen;
     private bool IsPauseOpen;
+    private bool IsEquipmentOpen;
 
     private void Start()
     {
@@ -47,18 +49,21 @@ public class UiManager:MonoBehaviour
     {
         IsPanelOpen = false;
         IsBackOpen = false;
+        IsEquipmentOpen = false;
         PopupStack = new Stack<BasePanel>();
         AiPopupStack = new Stack<BasePanel>();
         EventCenter.Instance.Add(this, "RefreshScreen", RefreshScreen);
         BackPack.Init();
         PlayerPanel.Init();
         SkiilPanel.Init();
+        EquipmentUi.Init();
         EventCenter.Instance.Add(this, "PushPlayerPanel", PushPlayerPanel);
         EventCenter.Instance.Add(this, "PushBackPack", PushBackPack);
         EventCenter.Instance.Add(this, "PushPuasePanel", PushPuasePanel);
         EventCenter.Instance.Add(this, "PushClearAll", ClearAll);
         EventCenter.Instance.Add(this, "PushCardsPanel", PushCardsPanel);
         EventCenter.Instance.Add(this, "PopCardsPanel", PopCardsPanel);
+        EventCenter.Instance.Add(this, "PushEquipmentPanel", PushEquipmentPanel);
 
     }
     //主界面处理
@@ -124,6 +129,19 @@ public class UiManager:MonoBehaviour
         {
             Pop();
             IsPauseOpen = false;
+        }
+    }
+    private void PushEquipmentPanel()
+    {
+        if(!IsEquipmentOpen)
+        {
+            Push(EquipmentUi);
+            IsEquipmentOpen = true;
+        }
+        else
+        {
+            Pop();
+            IsEquipmentOpen = false;
         }
     }
     private void PushCardsPanel()
