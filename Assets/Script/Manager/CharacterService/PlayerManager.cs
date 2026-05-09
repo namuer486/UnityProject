@@ -19,7 +19,7 @@ public class PlayerManager : MonoBehaviour
     public PlayerMove move;
     public PlayerRotation rotation;
     public Transform BirthPos;
-    private void Init()
+    public void Init()
     {
         //attack = GetComponent<PlayerAttack>();
         //move = GetComponent<PlayerMove>();

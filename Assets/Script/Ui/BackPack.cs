@@ -74,24 +74,19 @@ public class BackPack : MonoBehaviour,BasePanel
         bagDate = BackPackManager.instance.bagDate;
         for (int i = 0;i < bagDate.count;i++)
         {
+            //优化：在背包数据里增添一个已使用格子列表，直接查询
             //TextMeshProUGUI num = buttons[i].transform.Find("Num").GetComponent<TextMeshProUGUI>();
-            BackGrid backGrid = buttons[i].GetComponent<BackGrid>();
-            backGrid.GridItemID = i;
-            if (bagDate.items[i].itemcfg != null)
+            if (bagDate.items[i] == null)
             {
-                backGrid.GridItemcfg = bagDate.items[i].itemcfg;
-                backGrid.Set();
-                //if (bagDate.items[i].count > 1)
-                //{
-                //    num.text = bagDate.items[i].count.ToString();
-                //    num.gameObject.SetActive(true);
-                //    continue;
-                //}
-                //num.gameObject.SetActive(false);
+                BackGrid backG = buttons[i].GetComponent<BackGrid>();
+                backG.GridItemID = i;
+                backG.Clear();
                 continue;
             }
-            //num.gameObject.SetActive(false);
-            backGrid.Clear();
+            BackGrid backGrid = buttons[i].GetComponent<BackGrid>();
+            backGrid.GridItemID = i;
+            backGrid.Set(bagDate.items[i]);
+            
         }
         Debug.Log("背包界面刷新完成");
     }

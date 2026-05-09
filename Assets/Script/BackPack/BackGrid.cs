@@ -13,12 +13,13 @@ public class BackGrid:MonoBehaviour, IPointerClickHandler,IBeginDragHandler,IDra
     public int GridItemID { get; set; }
     public ItemConfig GridItemcfg {  get; set; }
 
+    public BagItem item { get; set; }
+
     private Image BackImage;
 
     private TextMeshProUGUI itemtext;
     public Transform itemPanel {  get; set; }
     private Button use;
-
     private Vector2 itemRect;
 
 
@@ -32,10 +33,17 @@ public class BackGrid:MonoBehaviour, IPointerClickHandler,IBeginDragHandler,IDra
         use = itemPanel.Find("Use").GetComponent<Button>();
         use.onClick.AddListener(Use);
     }
-    public void Set()
+    public void Set(BagItem item)
     {
+        this.item = item;
+        GridItemcfg = item.itemcfg;
         itemPanel.SetAsLastSibling();
         BackImage = GetComponent<Image>();
+        if (GridItemcfg == null)
+        {
+            BackImage.sprite = null;
+            return;
+        }
         BackImage.sprite = GridItemcfg.icon;
     }
     public void OnBeginDrag(PointerEventData eventData)//拖拽三件套TODO：完成物品的拖拽交换
@@ -46,7 +54,6 @@ public class BackGrid:MonoBehaviour, IPointerClickHandler,IBeginDragHandler,IDra
         transform.SetAsLastSibling();
         GetComponent<Image>().raycastTarget = false;
         itemRect = GetComponent<RectTransform>().anchoredPosition;
-        BackPackManager.instance.SetNowIdx(GridItemID);
         transform.position = eventData.position;
     }
     public void OnDrag(PointerEventData eventData)
@@ -64,28 +71,23 @@ public class BackGrid:MonoBehaviour, IPointerClickHandler,IBeginDragHandler,IDra
         BackGrid newgrid = gameObject.GetComponent<BackGrid>();
         if (gameObject != null&& newgrid != null)
         {
-            BackPackManager.instance.ChangeIdx(newgrid.GridItemID);
+            BackPackManager.instance.ExChange(GridItemID, newgrid.GridItemID);
         }
         //装备判断
         EquipmentGrid equipmentgrid = gameObject.GetComponent<EquipmentGrid>();
-        if (gameObject != null && equipmentgrid != null)
+        if (gameObject != null && equipmentgrid != null&&item.itemcfg.type==ItemType.equipment&&item.itemcfg.equipmet==equipmentgrid.type)
         {
+            EqupmentService.Instance.Add(item);
             BackPackManager.instance.UseItem(GridItemID);
-            equipmentgrid.Push(GridItemcfg);
-            equipmentgrid.refresh();
+            EventCenter.Instance.OnTriggerEven("BackPackUiUpdate");
+            EventCenter.Instance.OnTriggerEven("EquipmentUiRefresh");
+
+            //装备服务
         }
         GetComponent<RectTransform>().anchoredPosition = itemRect;
         GetComponent<Image>().raycastTarget = true;
     }
     
-    public void OnPointerDown(PointerEventData eventData)
-    {
-
-    }
-    public void OnPointerUp(PointerEventData eventData)
-    {
-
-    }
     public void OnPointerClick(PointerEventData eventData)
     {
         if (GridItemcfg == null )
@@ -107,13 +109,14 @@ public class BackGrid:MonoBehaviour, IPointerClickHandler,IBeginDragHandler,IDra
     }
     private void Use()
     {
-        EventCenter.Instance.OnTriggerEven("UseItem", GridItemID);
+        BackPackManager.instance.UseItem(GridItemID);
         itemPanel.gameObject.SetActive(false);
         IsOpen = !IsOpen;
         Debug.Log("使用物品" + (GridItemID));
     }
     public void Clear()
     {
+        item = null;
         GridItemcfg = null;
         //GridItemID = -1;
         GetComponent<Image>().sprite = null;

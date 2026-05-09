@@ -76,10 +76,16 @@ public class GameManage : MonoBehaviour
         EventCenter.Instance.Add(this, "GameBegin", GameBegin);
         EventCenter.Instance.Add(this, "ComeBackMenu", ComeBackMenu);
 
-        EventCenter.Instance.OnTriggerEven("BackPackManagerInit");
-        EventCenter.Instance.OnTriggerEven("UiManagerInit");
-        EventCenter.Instance.OnTriggerEven("MonsterManagerInit");
-        EventCenter.Instance.OnTriggerEven("PlayerManagerInit");
+        //EventCenter.Instance.OnTriggerEven("BackPackManagerInit");
+        //EventCenter.Instance.OnTriggerEven("EqupmentServiceInit");
+        //EventCenter.Instance.OnTriggerEven("UiManagerInit");
+        //EventCenter.Instance.OnTriggerEven("MonsterManagerInit");
+        //EventCenter.Instance.OnTriggerEven("PlayerManagerInit");
+        BackPackManager.instance.Init();
+        EqupmentService.Instance.Init();
+        UiManager.instance.Init();
+        MonsterManager.instance.Init();
+        PlayerManager.instance.Init();
         Debug.Log("服务模块初始化完成");
 
         var table = ItemTable.Instance;

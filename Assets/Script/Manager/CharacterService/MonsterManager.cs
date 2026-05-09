@@ -45,7 +45,7 @@ public class MonsterManager : MonoBehaviour
             MonsterBirth();
         }
     }
-    private void Init()
+    public void Init()
     {
         monster = new List<GameObject>();
         EventCenter.Instance.Add<GameObject>(this, "MonsterDie", MonsterDie);

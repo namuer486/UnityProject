@@ -45,7 +45,7 @@ public class UiManager:MonoBehaviour
     {
         EventCenter.Instance.RemoveAll(this);
     }
-    private void Init()
+    public void Init()
     {
         IsPanelOpen = false;
         IsBackOpen = false;

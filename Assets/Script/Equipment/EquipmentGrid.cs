@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -11,32 +12,20 @@ public class EquipmentGrid : MonoBehaviour,IPointerClickHandler
     public ItemConfig Config {  get; set; }
 
 
-    public void refresh()
+    public void refresh(BagItem item)
     {
-        if(Config == null) 
+        if(item == null) 
             return;
+        Config=item.itemcfg;
         GetComponent<Image>().sprite = Config.icon;
 
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Pop();
-    }
-    public void Push(ItemConfig Config)
-    {
-        if (Config.type == ItemType.equipment && Config.equipmet == type)
-        {
-            this.Config = Config;
-            EventCenter.Instance.OnTriggerEven("BackPackUiUpdate");
-        }
-    }
-    public void Pop()
-    {
-        if(Config == null)
-            return;
-        EventCenter.Instance.OnTriggerEven("BagAdd", Config, 1);
+        if(Config == null) return;
+        EqupmentService.Instance.Remove(Config.equipmet);
+        GetComponent<Image>().sprite = null;
         Config = null;
-        // Ù–‘œ¬Ωµ
     }
 }
