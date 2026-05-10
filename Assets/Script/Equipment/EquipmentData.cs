@@ -19,6 +19,7 @@ public class EquipmentData : MonoBehaviour
             //ÇÐ»»
             var bagItem = pairs[itemtype];
             pairs[itemtype] = item;
+            EventCenter.Instance.OnTriggerEven("EquipmentUiRefresh");
             return bagItem;
         }
         pairs.Add(itemtype, item);
@@ -34,6 +35,7 @@ public class EquipmentData : MonoBehaviour
         var bagItem = pairs[type];
         pairs[type] = null;
         pairs.Remove(type);
+        EventCenter.Instance.OnTriggerEven("EquipmentUiRefresh");
         return bagItem;
     }
     public BagItem GetBagItem(EquipmetType type)

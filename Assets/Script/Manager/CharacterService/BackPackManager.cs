@@ -32,6 +32,11 @@ public class BackPackManager : MonoBehaviour
         bagDate.Add(item);
         EventCenter.Instance.OnTriggerEven("BackPackUiUpdate");
     }
+    public void Remove(int idx)
+    {
+        bagDate.Remove(idx);
+        EventCenter.Instance.OnTriggerEven("BackPackUiUpdate");
+    }
     public void UseItem(int idx)
     {
         bagDate.Use(idx);

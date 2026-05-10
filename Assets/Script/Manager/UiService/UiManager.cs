@@ -63,7 +63,7 @@ public class UiManager:MonoBehaviour
         EventCenter.Instance.Add(this, "PushClearAll", ClearAll);
         EventCenter.Instance.Add(this, "PushCardsPanel", PushCardsPanel);
         EventCenter.Instance.Add(this, "PopCardsPanel", PopCardsPanel);
-        EventCenter.Instance.Add(this, "PushEquipmentPanel", PushEquipmentPanel);
+        //EventCenter.Instance.Add(this, "PushEquipmentPanel", PushEquipmentPanel);
 
     }
     //主界面处理
@@ -109,12 +109,14 @@ public class UiManager:MonoBehaviour
         if(!IsBackOpen)
         {
             Push(BackPack);
+            Push(EquipmentUi);
             IsBackOpen = true;
         }
         else
         {
             Pop();
-            IsBackOpen=false;
+            Pop();
+            IsBackOpen =false;
         }
         
     }

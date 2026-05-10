@@ -16,7 +16,14 @@ MonoBehaviour:
   - ItemID: 1001
     type: 2
     equipmet: 4
-    maxCount: 5
+    maxCount: 1
     itemName: "\u5251"
     icon: {fileID: 1302485860, guid: e01effb293976db469b48738b97c6188, type: 3}
+    effectNum: 0
+  - ItemID: 1002
+    type: 2
+    equipmet: 5
+    maxCount: 1
+    itemName: "\u76FE\u724C"
+    icon: {fileID: 1083357464, guid: e01effb293976db469b48738b97c6188, type: 3}
     effectNum: 0

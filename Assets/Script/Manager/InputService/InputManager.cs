@@ -50,17 +50,12 @@ public class InputManager : MonoBehaviour
         {
             Debug.Log("打开背包");
             EventCenter.Instance.OnTriggerEven("PushBackPack");
+            //EventCenter.Instance.OnTriggerEven("PushEquipmentPanel");
         }
         if(Input.GetKeyDown(KeyCode.V))
         {
             Debug.Log("打开面板");
             EventCenter.Instance.OnTriggerEven("PushPlayerPanel");
-        }
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            Debug.Log("打开装备栏");
-            EventCenter.Instance.OnTriggerEven("PushEquipmentPanel");
-            
         }
         CheckMove();
         if(!isMoving)

@@ -6453,7 +6453,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8469855160885767229, guid: 6a84340bba471d24b872703e2a67b718, type: 3}
       propertyPath: HP
-      value: 100
+      value: 100000
       objectReference: {fileID: 0}
     - target: {fileID: 8469855160885767229, guid: 6a84340bba471d24b872703e2a67b718, type: 3}
       propertyPath: MP

@@ -77,8 +77,12 @@ public class BackGrid:MonoBehaviour, IPointerClickHandler,IBeginDragHandler,IDra
         EquipmentGrid equipmentgrid = gameObject.GetComponent<EquipmentGrid>();
         if (gameObject != null && equipmentgrid != null&&item.itemcfg.type==ItemType.equipment&&item.itemcfg.equipmet==equipmentgrid.type)
         {
-            EqupmentService.Instance.Add(item);
-            BackPackManager.instance.UseItem(GridItemID);
+            var equipmet = EqupmentService.Instance.Add(item);
+            BackPackManager.instance.Remove(GridItemID);
+            if (equipmet != null)
+            {
+                BackPackManager.instance.Add(equipmet);
+            }
             EventCenter.Instance.OnTriggerEven("BackPackUiUpdate");
             EventCenter.Instance.OnTriggerEven("EquipmentUiRefresh");
 

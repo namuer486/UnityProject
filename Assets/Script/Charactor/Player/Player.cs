@@ -34,7 +34,7 @@ public class Player : MonoBehaviour
     }
     private void OnReset()
     {
-        HP = 1000000;
+        HP = 100;
         MP = 50;
         Level = 0;
         Exp = 0;

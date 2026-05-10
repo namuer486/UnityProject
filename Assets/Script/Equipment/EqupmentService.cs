@@ -46,28 +46,24 @@ public class EqupmentService : MonoBehaviour
     {
         data=new EquipmentData();
         data.Init();
-        EventCenter.Instance.Add<BagItem>(this, "AddEquipment", Add);
+        //EventCenter.Instance.Add<BagItem>(this, "AddEquipment", Add);
         EventCenter.Instance.Add(this, "EqupmentServiceClear", Clear);
     }
-    public void Add(BagItem item)
+    public BagItem Add(BagItem item)
     {
         if (item.itemcfg.type != ItemType.equipment)
-            return;
-        var temp = data.Add(item);
-        if(temp != null)
-        {
-            EventCenter.Instance.OnTriggerEven("BagAdd", temp);
-        }
-        EventCenter.Instance.OnTriggerEven("EquipmentUiRefresh");
+            return null;
+        return data.Add(item);
     }
-    public void Remove(EquipmetType type)
+    public BagItem Remove(EquipmetType type)
     {
-        var temp = data.Remove(type);
-        if (temp != null)
-        {
-            EventCenter.Instance.OnTriggerEven("BagAdd", temp);
-        }
-        EventCenter.Instance.OnTriggerEven("EquipmentUiRefresh");
+        //var temp = data.Remove(type);
+        //if (temp != null)
+        //{
+        //    EventCenter.Instance.OnTriggerEven("BagAdd", temp);
+        //}
+        //EventCenter.Instance.OnTriggerEven("EquipmentUiRefresh");
+        return data.Remove(type);
     }
     public void Clear()
     {
