@@ -83,9 +83,11 @@ public class GameManage : MonoBehaviour
         //EventCenter.Instance.OnTriggerEven("PlayerManagerInit");
         BackPackManager.instance.Init();
         EqupmentService.Instance.Init();
+        TaskManager.Instance.Init();
         UiManager.instance.Init();
         MonsterManager.instance.Init();
         PlayerManager.instance.Init();
+        ItemMake.instance.Init();
         Debug.Log("服务模块初始化完成");
 
         var table = ItemTable.Instance;

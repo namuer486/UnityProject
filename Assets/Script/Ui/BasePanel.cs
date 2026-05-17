@@ -5,12 +5,6 @@ using UnityEngine;
 public interface BasePanel
 {
     // Start is called before the first frame update
-    public void Open()
-    {
-
-    }
-    public void Close()
-    {
-
-    }
+    public void Open();
+    public void Close();
 }

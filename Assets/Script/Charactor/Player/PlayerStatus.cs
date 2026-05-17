@@ -156,15 +156,20 @@ public class PlayerAttackStatus : Status
         {
             manager.ChangePlayerStatus(PlayerType.move);
         }
+        if (!manager.IsAttack)
+        {
+            manager.ChangePlayerStatus(PlayerType.idel);
+        }
         if(timer > tank.attack_cd&&manager.IsAttack)
         {
+            //tank.animator.SetBool("IsAttack", true);
             tank.Attack();
         }
 
     }
     public void OnExit()
     {
-
+        tank.animator.SetBool("IsAttack", false);
     }
 }
 public class PlayerDieStatus : Status

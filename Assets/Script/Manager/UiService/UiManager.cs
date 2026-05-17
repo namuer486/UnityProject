@@ -25,6 +25,7 @@ public class UiManager:MonoBehaviour
     public PlayerPanel PlayerPanel;
     public BackPack BackPack;
     public EquipmentUi EquipmentUi;
+    public TaskUi TaskUi;
 
     public BasePanel PauseUi;
     private BasePanel UiMainNow;
@@ -36,6 +37,7 @@ public class UiManager:MonoBehaviour
     private bool IsBackOpen;
     private bool IsPauseOpen;
     private bool IsEquipmentOpen;
+    private bool IsTaskOpen;
 
     private void Start()
     {
@@ -57,12 +59,14 @@ public class UiManager:MonoBehaviour
         PlayerPanel.Init();
         SkiilPanel.Init();
         EquipmentUi.Init();
+        TaskUi.Init();
         EventCenter.Instance.Add(this, "PushPlayerPanel", PushPlayerPanel);
         EventCenter.Instance.Add(this, "PushBackPack", PushBackPack);
         EventCenter.Instance.Add(this, "PushPuasePanel", PushPuasePanel);
         EventCenter.Instance.Add(this, "PushClearAll", ClearAll);
         EventCenter.Instance.Add(this, "PushCardsPanel", PushCardsPanel);
         EventCenter.Instance.Add(this, "PopCardsPanel", PopCardsPanel);
+        EventCenter.Instance.Add(this, "PushTaskPanel", PushTaskPanel);
         //EventCenter.Instance.Add(this, "PushEquipmentPanel", PushEquipmentPanel);
 
     }
@@ -146,6 +150,21 @@ public class UiManager:MonoBehaviour
             IsEquipmentOpen = false;
         }
     }
+    private void PushTaskPanel()
+    {
+        if(!IsTaskOpen)
+        {
+            Push(TaskUi);
+            IsTaskOpen = true;
+        }
+        else
+        {
+            Pop();
+            IsTaskOpen = false;
+        }
+    }
+
+    //×Ô¶¯µ¯´°
     private void PushCardsPanel()
     {
         PushAi(SkiilPanel);

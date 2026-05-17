@@ -18,11 +18,13 @@ public class Player : MonoBehaviour
     public float angleDelta = 45f;
     public float rotateTime = 1f;
     public float rotateSpeed = 90f;
+    public Animator animator {  get; private set; }
 
     public Vector3 DiePos=new Vector3(110,1110,10);
 
     public void Init()
     {
+        animator = GetComponent<Animator>();
         fsm =new PlayerFSM(this);
         transform.position = BirthPos.position;
         EventCenter.Instance.Add<int>(this, "PlayerHurt", OnHurt);
@@ -31,6 +33,7 @@ public class Player : MonoBehaviour
         EventCenter.Instance.OnTriggerEven("HPUpDate", HP);
         EventCenter.Instance.OnTriggerEven("MPUpDate", MP);
         EventCenter.Instance.OnTriggerEven("LevelUpDate", Level);
+        animator.Play("Idel");
     }
     private void OnReset()
     {
@@ -116,9 +119,16 @@ public class Player : MonoBehaviour
             Debug.Log("×Óµ¯Î´ÉèÖÃ");
             return;
         }
+        StartCoroutine(AttackAni(mybullet));
+        fsm.IsAttack = false;
+    }
+    IEnumerator AttackAni(GameObject mybullet)
+    {
+        animator.SetBool("IsAttack", true);
+        yield return new WaitForSeconds(attack_cd);
         mybullet.transform.position = transform.Find("fort").Find("posshoot").position;
         mybullet.transform.rotation = transform.rotation;
         mybullet.SetActive(true);
-        fsm.IsAttack = false;
+        
     }
 }

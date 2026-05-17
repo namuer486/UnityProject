@@ -54,8 +54,13 @@ public class InputManager : MonoBehaviour
         }
         if(Input.GetKeyDown(KeyCode.V))
         {
-            Debug.Log("打开面板");
+            Debug.Log("打开人物面板");
             EventCenter.Instance.OnTriggerEven("PushPlayerPanel");
+        }
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            Debug.Log("打开任务面板");
+            EventCenter.Instance.OnTriggerEven("PushTaskPanel");
         }
         CheckMove();
         if(!isMoving)

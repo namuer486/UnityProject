@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpeedItem : BaseItem
+public class SpeedItemUse : ItemUseStrategy
 {
     public void Use(int value)
     {

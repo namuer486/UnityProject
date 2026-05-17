@@ -4,9 +4,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using static UnityEditor.Progress;
 public class ItemMake : MonoBehaviour
 {
     public static ItemMake instance;
+
+    public BaseItem item {  get; private set; }
 
     private void Awake()
     {
@@ -19,15 +22,21 @@ public class ItemMake : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    public void Init()
+    {
+        item = new BaseItem();
+    }
     public BaseItem GetItem(ItemConfig itemDate)//物品加工
     {
         switch (itemDate.type)
         {
             case ItemType.hp:
-                return new HpItem();
+                item.Made(new HpItemUse());
+                return item;
                 //TODO:返回对应物件实例
             case ItemType.attack:
-                return new AttackItem();
+                item.Made(new AttackItemUse());
+                return item;
             default:
                 return null;
         }
@@ -37,12 +46,15 @@ public class ItemMake : MonoBehaviour
         switch (itemDate.cardtype)
         {
             case CardsType.hp:
-                return new HpItem();
-                //TODO:返回对应物件实例
+                item.Made(new HpItemUse());
+                return item;
+            //TODO:返回对应物件实例
             case CardsType.attack:
-                return new AttackItem();
+                item.Made(new AttackItemUse());
+                return item;
             case CardsType.speed:
-                return new SpeedItem();
+                item.Made(new SpeedItemUse());
+                return item;
             default:
                 return null;
         }

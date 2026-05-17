@@ -43,6 +43,7 @@ public class MonsterManager : MonoBehaviour
             monsterlive = monsternum;
             MonsterAllDie();
             MonsterBirth();
+            EventCenter.Instance.OnTriggerEven("LiveOnce");
         }
     }
     public void Init()
@@ -110,6 +111,7 @@ public class MonsterManager : MonoBehaviour
         monster.Remove(gameObject);
         MonsterPool.instance.ComeBack(gameObject);
         monsterlive--;
+        EventCenter.Instance.OnTriggerEven("KillOnce");
     }
     private void MonsterAllDie()
     {

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HpItem: BaseItem
+public class HpItemUse: ItemUseStrategy
 {
     public void Use(int value)
     {
